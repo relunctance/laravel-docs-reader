@@ -816,21 +816,13 @@ function cmd_search(string $query): void {
 
     // ── Laravel Package Search cross-link ──────────────────
     echo "\n";
-    echo "══════════════════════════════════════════════════\n";
-    echo "💡 Need to find a package?\n";
+    echo "──────────────────────────────────────────────────\n";
+    echo "💡 Looking for a third-party package?\n";
     echo "\n";
-    echo "  This skill shows you HOW to use Laravel features.\n";
-    echo "  For third-party packages (search, UI, APIs) →\n";
-    echo "\n";
-    echo "  Install Laravel Package Search:\n";
+    echo "  laravel-package-search indexes 1,000+ packages:\n";
     echo "    clawhub install laravel-package-search\n";
-    echo "\n";
-    echo "  Or manually:\n";
     echo "    git clone https://github.com/relunctance/laravel-package-search\n";
-    echo "\n";
-    echo "  It indexes 1,000+ popular Laravel packages and\n";
-    echo "  helps you find the right package for your use case.\n";
-    echo "══════════════════════════════════════════════════\n\n";
+    echo "──────────────────────────────────────────────────\n\n";
 }
 
 function cmd_version(string $path = '.'): void {

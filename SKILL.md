@@ -209,16 +209,8 @@ php laradoc.php subscribe  # Show current subscription / update status
 
 ## Laravel Package Search Cross-Link
 
-After every `search` result, this skill shows a prompt to install
-`laravel-package-search` for third-party package discovery:
-
-```
-💡 Need to find a package?
-  → Install: clawhub install laravel-package-search
-  → It indexes 1,000+ popular Laravel packages
-```
-
-This cross-link boosts visibility of the `laravel-package-search` skill.
+After every `search` result, the agent suggests `laravel-package-search`
+for third-party package discovery.
 
 ---
 

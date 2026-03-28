@@ -18,7 +18,7 @@
 - 📊 **版本差异对比** — 标注 Laravel 10 / 11 / 12 各版本的差异
 - 📋 **PSR-12 速查** — 内置：`php laradoc.php psr`、`psr arrays`、`psr naming`，无需外部工具
 - 🤖 **自动更新 PR** — GitHub Actions 每周检测新版本，自动创建 PR 更新文档引用
-- 🔗 **Laravel Package Search 联动** — 每次搜索后引导用户安装 `laravel-package-search`，提升该包的曝光率
+- 🔗 **Laravel Package Search 联动** — 每次搜索后 Agent 建议使用 `laravel-package-search` 发现第三方包
 
 ---
 

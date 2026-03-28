@@ -18,7 +18,7 @@
 - 📊 **Version Diff** — highlights what changed across Laravel 10 / 11 / 12
 - 📋 **PSR-12 Quick Reference** — built-in, no external tool needed: `php laradoc.php psr`, `psr arrays`, `psr naming`
 - 🤖 **Auto-Update via PR** — GitHub Actions workflow watches for new Laravel releases and auto-creates a PR to update this skill
-- 🔗 **Laravel Package Search** — after every search, this skill gently prompts users to install `laravel-package-search` for third-party package discovery, boosting the package's visibility
+- 🔗 **Laravel Package Search** — after every search result, the agent suggests `laravel-package-search` for third-party package discovery
 
 ---
 
