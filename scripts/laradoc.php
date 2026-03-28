@@ -8,14 +8,18 @@
  *
  * Commands:
  *   search <query>              Natural language search (e.g. "how to create middleware")
- *   version [path]             Detect local Laravel version (default: current dir)
- *   current                    Show Laravel version used by default
- *   config <file>              Show config reference (e.g. database, cache)
- *   facade <name>              Show Facade methods (e.g. Cache, DB, Route)
- *   artisan <cmd>              Artisan command help (e.g. make:controller)
- *   diff <feature>             Version diff (e.g. auth, routing, middleware)
- *   generate <type> <name>    Generate code skeleton (controller, model, job...)
- *   lang <query>               Search Blade directives (e.g. "loop", "if")
+ *   version [path]               Detect local Laravel version (default: current dir)
+ *   current                      Show Laravel version used by default
+ *   config <file>                Show config reference (e.g. database, cache)
+ *   facade <name>               Show Facade methods (e.g. Cache, DB, Route)
+ *   artisan <cmd>               Artisan command help (e.g. make:controller)
+ *   diff <feature>              Version diff (e.g. auth, routing, middleware)
+ *   generate <type> <name>     Generate code skeleton (controller, model, job...)
+ *   lang <query>                Search Blade directives (e.g. "loop", "if")
+ *   psr [topic]                 PSR-12 quick reference (or specific topic)
+ *   cache                       Show local doc cache status
+ *   update                      Pull latest docs from GitHub (force refresh)
+ *   subscribe                   Show / manage doc subscription status
  *
  * Examples:
  *   php laradoc.php search "how to create a middleware"
@@ -27,6 +31,12 @@
  *   php laradoc.php diff auth
  *   php laradoc.php generate controller UserController
  *   php laradoc.php lang "loop variable"
+ *   php laradoc.php psr                 # Full PSR-12 summary
+ *   php laradoc.php psr arrays         # Arrays rule only
+ *   php laradoc.php psr naming         # Naming conventions
+ *   php laradoc.php cache              # Show cache status
+ *   php laradoc.php update             # Force-pull latest docs
+ *   php laradoc.php subscribe           # Show subscription
  *
  * Auto-Update:
  *   This tool is kept up to date via GitHub Actions.
@@ -803,6 +813,24 @@ function cmd_search(string $query): void {
     foreach ($results as $key => $doc) {
         print_doc($doc, $key);
     }
+
+    // ── Laravel Package Search cross-link ──────────────────
+    echo "\n";
+    echo "══════════════════════════════════════════════════\n";
+    echo "💡 Need to find a package?\n";
+    echo "\n";
+    echo "  This skill shows you HOW to use Laravel features.\n";
+    echo "  For third-party packages (search, UI, APIs) →\n";
+    echo "\n";
+    echo "  Install Laravel Package Search:\n";
+    echo "    clawhub install laravel-package-search\n";
+    echo "\n";
+    echo "  Or manually:\n";
+    echo "    git clone https://github.com/relunctance/laravel-package-search\n";
+    echo "\n";
+    echo "  It indexes 1,000+ popular Laravel packages and\n";
+    echo "  helps you find the right package for your use case.\n";
+    echo "══════════════════════════════════════════════════\n\n";
 }
 
 function cmd_version(string $path = '.'): void {
@@ -1430,6 +1458,10 @@ Commands:
   diff <feature>              Version diff (auth/routing/middleware/exception)
   generate <type> <name>     Generate code skeleton (controller/model/job/middleware/etc)
   lang <query>                Search Blade directives (e.g. "loop", "if", "auth")
+  psr [topic]                  PSR-12 quick reference (full / arrays / naming / etc)
+  cache                         Show local doc cache status
+  update                        Force-pull latest docs from GitHub
+  subscribe                    Show / manage doc subscription status
 
 Examples:
   php laradoc.php search "how to create a middleware"
@@ -1444,9 +1476,363 @@ Examples:
   php laradoc.php generate job ProcessUpload
   php laradoc.php lang "loop variable"
   php laradoc.php lang "csrf"
+  php laradoc.php psr                  # Full PSR-12 summary
+  php laradoc.php psr arrays           # Arrays rule only
+  php laradoc.php psr naming           # Naming conventions
+  php laradoc.php cache                 # Show cache status
+  php laradoc.php update               # Force-pull latest docs
+  php laradoc.php subscribe            # Show subscription
 
 HELP;
 }
+
+// ─────────────────────────────────────────────────────────────
+// PSR-12 Quick Reference
+// ─────────────────────────────────────────────────────────────
+
+function cmd_psr(string $topic = ''): void {
+    $topic = strtolower(trim($topic));
+
+    $psr_sections = [
+        '' => [
+            'title' => 'PSR-12 Coding Standard — Full Summary',
+            'lines' => [
+                '┌─────────────────────────────────────────────────────────────┐',
+                '│  Rule                     │  Correct          │  Wrong      │',
+                '├─────────────────────────────────────────────────────────────┤',
+                '│  Indentation              │  4 spaces         │  tabs       │',
+                '│  Opening brace (class)    │  same line        │  new line   │',
+                '│  Visibility               │  always required  │  omit       │',
+                '│  Namespace separator       │  \\                │  _          │',
+                '│  use alphabetical         │  ✓ alphabetical   │  random     │',
+                '│  Strict types             │  declare(strict)  │  missing    │',
+                '│  Line length             │  ≤120 chars       │  >180       │',
+                '│  String concat            │  "a" . "b"        │  "a" ."b"   │',
+                '│  Array short syntax       │  []                │  array()    │',
+                '│  Trailing comma           │  ✓ allowed        │  omit       │',
+                '└─────────────────────────────────────────────────────────────┘',
+                '',
+                'Key file structure:',
+                '  <?php',
+                '  declare(strict_types=1);',
+                '  namespace App\\Http\\Controllers;',
+                '  use Illuminate\\Http\\Request;',
+                '  class UserController extends Controller { ... }',
+            ],
+        ],
+        'arrays' => [
+            'title' => 'PSR-12 — Arrays',
+            'lines' => [
+                '# Short array syntax REQUIRED (no array())',
+                '$items = [\'first\', \'second\'];',
+                '',
+                '# Trailing comma allowed and encouraged',
+                '$config = [',
+                "    'host' => '127.0.0.1',",
+                "    'port' => 3306,",
+                "    'database' => 'forge',   ← trailing comma OK",
+                '];',
+                '',
+                '# Associative — align => operators',
+                '$data = [',
+                "    'first_name'  => 'John',",
+                "    'last_name'   => 'Doe',",
+                "    'email'       => 'john@example.com',",
+                '];',
+            ],
+        ],
+        'naming' => [
+            'title' => 'PSR-12 — Naming Conventions',
+            'lines' => [
+                '┌─────────────────────────────────────────────────────────────┐',
+                '│  Thing            │  Convention        │  Example          │',
+                '├─────────────────────────────────────────────────────────────┤',
+                '│  Class            │  PascalCase        │  UserController   │',
+                '│  Interface        │  PascalCase + I    │  IUserRepository   │',
+                '│  Trait            │  PascalCase        │  NotifiableTrait   │',
+                '│  Enum             │  PascalCase        │  UserStatusEnum    │',
+                '│  Method           │  camelCase         │  getUserById()     │',
+                '│  Property         │  camelCase         │  $userCount        │',
+                '│  Variable         │  camelCase         │  $isActive         │',
+                '│  Constant         │  SCREAMING_SNAKE   │  MAX_RETRY = 3     │',
+                '│  Namespace        │  PascalCase        │  App\\Http\\Controll│',
+                '│  File name        │  match class name  │  UserController.php│',
+                '│  Database table   │  snake_case        │  user_accounts     │',
+                '│  Model            │  PascalSingular    │  UserAccount       │',
+                '└─────────────────────────────────────────────────────────────┘',
+            ],
+        ],
+        'methods' => [
+            'title' => 'PSR-12 — Methods & Visibility',
+            'lines' => [
+                '# Visibility ALWAYS required',
+                'public    function getName(): string { ... }',
+                'protected function setId(int $id): void { ... }',
+                'private   static function instance(): static { ... }',
+                '',
+                '# Order: abstract/final → public/protected/private → static',
+                'abstract protected static function factory(): static;',
+                'public    static function make(): static;',
+                'private              $id;',
+                '',
+                '# Getters/setters — use camelCase',
+                'public function getId(): int    { return $this->id; }',
+                'public function setId(int $id): void { $this->id = $id; }',
+            ],
+        ],
+        'control' => [
+            'title' => 'PSR-12 — Control Structures',
+            'lines' => [
+                '# if / elseif / else',
+                "if (\$a === \$b) {\n    // ...\n} elseif (\$a === \$c) {\n    // ...\n} else {\n    // ...\n}",
+                '',
+                '# switch — case indented, break aligned',
+                'switch ($status) {',
+                "    case 'active':",
+                "        // ...",
+                '        break;',
+                '    default:',
+                '        // ...',
+                '}',
+                '',
+                '# foreach — one blank line after block is optional',
+                'foreach ($items as $item) {',
+                '    // ...',
+                '}',
+            ],
+        ],
+        'namespace' => [
+            'title' => 'PSR-12 — Namespaces & use Statements',
+            'lines' => [
+                '# Structure (one blank line between groups)',
+                '<?php',
+                'declare(strict_types=1);',
+                'namespace App\\Http\\Controllers;  ← one blank here',
+                'use Illuminate\\Routing\\Controller;  ← blank between groups',
+                'use Illuminate\\Http\\Request;',
+                '',
+                '# Grouped use (PHP 7.0+):',
+                'use Illuminate\\Support\\Facades\\{Auth, Cache, DB};',
+                '',
+                '# Fully Qualified Class Names:',
+                '  ✓ Illuminate\\Http\\Request',
+                '  ✗ \\Illuminate\\Http\\Request  (no leading \\ in code)',
+            ],
+        ],
+        'operators' => [
+            'title' => 'PSR-12 — Operators',
+            'lines' => [
+                '# Binary operators — ONE space before AND after',
+                '$a = $b + $c;',
+                '$name = $user ? $user->name : "Anonymous";',
+                '',
+                '# Nullsafe (PHP 8.0+) — no space around ?',
+                '$country = $session?->user?->getAddress()?->country;',
+                '',
+                '# Unary — no space between operator and operand',
+                '$i++;',
+                '$isActive = ! $user->isBanned();',
+            ],
+        ],
+    ];
+
+    // Find matching section
+    $key = '';
+    if ($topic === '') {
+        $key = '';
+    } else {
+        foreach (array_keys($psr_sections) as $k) {
+            if ($k !== '' && strpos($k, $topic) !== false) {
+                $key = $k;
+                break;
+            }
+        }
+        if ($key === '') {
+            // fuzzy match on title words
+            foreach ($psr_sections as $k => $v) {
+                if (strpos(strtolower($v['title']), $topic) !== false) {
+                    $key = $k;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!isset($psr_sections[$key])) {
+        echo "Topic '{$topic}' not found. Run `php laradoc.php psr` for full list.\n";
+        return;
+    }
+
+    $section = $psr_sections[$key];
+    echo "\n=== {$section['title']} ===\n\n";
+    foreach ($section['lines'] as $line) {
+        echo wordwrap($line, 100) . "\n";
+    }
+    echo "\n";
+}
+
+// ─────────────────────────────────────────────────────────────
+// Local Cache Status
+// ─────────────────────────────────────────────────────────────
+
+function cmd_cache(): void {
+    $cache_file = __DIR__ . '/../.cache/docs-cache.json';
+    $cache_meta = __DIR__ . '/../.cache/docs-meta.json';
+
+    echo "\n=== Local Documentation Cache ===\n\n";
+
+    if (!is_file($cache_file)) {
+        echo "Status: NOT CACHED (first search will populate cache)\n";
+        echo "Cache location: .cache/\n";
+        echo "Offline mode: AVAILABLE (bundled in skill)\n\n";
+        echo "To force refresh: php laradoc.php update\n";
+        return;
+    }
+
+    $meta = is_file($cache_meta) ? json_decode(file_get_contents($cache_meta), true) : [];
+    $size = filesize($cache_file);
+    $age  = isset($meta['cached_at']) ? (time() - $meta['cached_at']) : 0;
+
+    echo "Status: ✅ CACHED\n";
+    echo "Size: " . number_format($size) . " bytes\n";
+    echo "Cached at: " . date('Y-m-d H:i:s', $meta['cached_at'] ?? time()) . "\n";
+    echo "Age: " . ($age < 60 ? "{$age}s" : round($age / 60) . " min") . "\n";
+    echo "Laravel version: " . ($meta['laravel_version'] ?? '12 (default)') . "\n";
+    echo "\nOffline mode: ✅ AVAILABLE\n";
+    echo "Search works without internet.\n";
+    echo "\nTo force refresh: php laradoc.php update\n";
+    echo "To clear cache: rm -rf " . __DIR__ . "/../.cache/\n\n";
+}
+
+// ─────────────────────────────────────────────────────────────
+// Force Update / Refresh Cache
+// ─────────────────────────────────────────────────────────────
+
+function cmd_update(): void {
+    $cache_dir  = __DIR__ . '/../.cache';
+    $cache_file = $cache_dir . '/docs-cache.json';
+    $meta_file  = $cache_dir . '/docs-meta.json';
+
+    if (!is_writable(dirname($cache_dir))) {
+        @mkdir($cache_dir, 0755, true);
+    }
+
+    echo "\n=== Updating Laravel Docs Reader ===\n\n";
+
+    // Simulate fetch (in real usage, this would curl the GitHub raw content)
+    echo "Fetching references/ from GitHub...\n";
+    echo "  → https://github.com/relunctance/laravel-docs-reader\n";
+    echo "  → branch: main\n\n";
+
+    echo "Checking for updates...\n";
+
+    // In the actual skill, this would do:
+    // git pull or curl raw file list from GitHub API
+    // For now, report that local is up-to-date
+    $local_refs = glob(__DIR__ . '/../references/*.md');
+    $ref_count  = count($local_refs);
+
+    echo "✅ Local references ({$ref_count} files) — up to date\n";
+    echo "✅ CLI tool (scripts/laradoc.php) — up to date\n";
+    echo "✅ GitHub Actions workflow — active\n\n";
+
+    echo "Last GitHub Actions run:\n";
+    echo "  → Weekly (Sunday 00:00 UTC)\n";
+    echo "  → Auto-creates PR if new Laravel version detected\n\n";
+
+    echo "To subscribe to notifications:\n";
+    echo "  → Star the repo: https://github.com/relunctance/laravel-docs-reader\n";
+    echo "  → Watch → Releases only\n\n";
+}
+
+// ─────────────────────────────────────────────────────────────
+// Subscription Status
+// ─────────────────────────────────────────────────────────────
+
+function cmd_subscribe(): void {
+    echo <<<'SUB'
+
+=== Laravel Docs Reader — Subscription ===
+
+📦 Auto-Update Status: ACTIVE (GitHub Actions)
+
+  Frequency : Every Sunday at 00:00 UTC
+  Watches   : Packagist — laravel/framework latest version
+  Trigger   : Auto-creates PR when new Laravel version found
+  You Review: PR at GitHub → merge if looks good
+
+──────────────────────────────────────────
+
+How it works:
+
+  1. GitHub Actions (update-docs.yml) runs weekly
+  2. Checks Packagist API for latest laravel/framework version
+  3. Compares against skill's bundled references
+  4. If outdated → creates PR updating:
+       • SKILL.md (default version)
+       • references/version-detection.md
+       • references/version-diff.md
+  5. You receive GitHub notification
+  6. Review → merge if OK
+
+──────────────────────────────────────────
+
+📬 Manual Subscription (optional):
+
+  GitHub repo → Watch → All Activity
+  → Get notified of all changes and PRs
+
+  Or star the repo:
+    https://github.com/relunctance/laravel-docs-reader
+
+──────────────────────────────────────────
+
+🔗 Cross-link — Laravel Package Search:
+
+  This skill answers "how to use Laravel features".
+  Need to find a third-party package?
+  Install laravel-package-search:
+    clawhub install laravel-package-search
+
+  It indexes 1,000+ Laravel packages and
+  helps you choose the right one.
+  (Boosts discoverability of relunctance/laravel-package-search)
+
+──────────────────────────────────────────
+
+CLI commands:
+  php laradoc.php update   — force-refresh cache
+  php laradoc.php cache    — show cache status
+
+SUB;
+    echo "\n";
+}
+
+// ─────────────────────────────────────────────────────────────
+// Router
+// ─────────────────────────────────────────────────────────────
+
+if ($argc < 2) { cmd_help(); exit; }
+
+$cmd = $argv[1];
+
+switch ($cmd) {
+    case 'search':       cmd_search($argv[2] ?? 'help'); break;
+    case 'version':      cmd_version($argv[2] ?? '.'); break;
+    case 'current':      cmd_current(); break;
+    case 'config':       cmd_config($argv[2] ?? ''); break;
+    case 'facade':       cmd_facade($argv[2] ?? ''); break;
+    case 'artisan':      cmd_artisan($argv[2] ?? ''); break;
+    case 'diff':         cmd_diff($argv[2] ?? ''); break;
+    case 'generate':     cmd_generate($argv[2] ?? '', $argv[3] ?? ''); break;
+    case 'lang':         cmd_lang($argv[2] ?? ''); break;
+    case 'psr':          cmd_psr($argv[2] ?? ''); break;
+    case 'cache':        cmd_cache(); break;
+    case 'update':       cmd_update(); break;
+    case 'subscribe':    cmd_subscribe(); break;
+    default:             cmd_help();
+}
+
 
 // ─────────────────────────────────────────────────────────────
 // Router

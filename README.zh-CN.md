@@ -11,59 +11,61 @@
 ### 核心功能
 
 - 🔍 **自然语言 CLI 检索** — `php laradoc.php search "how to create a queue job"` — 像在问官方文档一样
+- 📦 **本地文档缓存** — 文档内置在 skill 中，离线可用，响应速度快
 - 🔄 **自动检测 Laravel 版本** — 检测项目版本（10/11/12），自动切换到对应文档
 - 📖 **完整文档覆盖** — 路由、控制器、模型、队列、邮件、认证、事件、广播、测试等全部覆盖
 - 🏭 **代码生成** — 生成符合 PSR-12 和 Laravel 最佳实践的代码骨架
 - 📊 **版本差异对比** — 标注 Laravel 10 / 11 / 12 各版本的差异
+- 📋 **PSR-12 速查** — 内置：`php laradoc.php psr`、`psr arrays`、`psr naming`，无需外部工具
 - 🤖 **自动更新 PR** — GitHub Actions 每周检测新版本，自动创建 PR 更新文档引用
+- 🔗 **Laravel Package Search 联动** — 每次搜索后引导用户安装 `laravel-package-search`，提升该包的曝光率
 
 ---
 
-## CLI 工具 — 10 个命令
+## CLI 工具 — 14 个命令
 
 ```bash
-# 自然语言检索 — 直接问文档
-php laradoc.php search "how to create a middleware"
+# ── 核心搜索 ──────────────────────────────────────────────────
+php laradoc.php search "how to create a middleware"   # 自然语言检索
 php laradoc.php search "how to send a notification"
-php laradoc.php search "queue job with retry and failure handling"
-php laradoc.php search "redis cache with tags"
+php laradoc.php search "queue job with retry"
+# ← 搜索结果后会自动提示安装 laravel-package-search
 
-# 版本检测 — 自动检测项目 Laravel 版本
-php laradoc.php version                     # 当前目录
+# ── 版本 ──────────────────────────────────────────────────────
+php laradoc.php version                   # 自动检测当前项目版本
 php laradoc.php version /path/to/project  # 指定项目
-php laradoc.php current                    # 显示默认版本
+php laradoc.php current                  # 显示默认版本 (Laravel 12)
 
-# 配置参考
+# ── 配置 & Facade ─────────────────────────────────────────────
 php laradoc.php config database
 php laradoc.php config cache
-php laradoc.php config mail
-
-# Facade 方法签名
 php laradoc.php facade Cache
 php laradoc.php facade DB
-php laradoc.php facade Route
 
-# Artisan 命令帮助
+# ── Artisan & 版本差异 ────────────────────────────────────────
 php laradoc.php artisan make:controller
-php laradoc.php artisan migrate
+php laradoc.php diff auth              # Laravel 10 vs 11 vs 12
 
-# 版本差异对比
-php laradoc.php diff auth          # 认证：Laravel 10 vs 11 vs 12
-php laradoc.php diff routing
-php laradoc.php diff middleware
-php laradoc.php diff exception
-
-# 代码骨架生成
+# ── 代码生成 ──────────────────────────────────────────────────
 php laradoc.php generate controller UserController
-php laradoc.php generate model     Post
-php laradoc.php generate job       ProcessUpload
-php laradoc.php generate request  StorePostRequest
+php laradoc.php generate model         Post
+php laradoc.php generate job          ProcessUpload
 php laradoc.php generate notification InvoicePaid
 
-# Blade 指令查找
+# ── Blade 指令 ────────────────────────────────────────────────
 php laradoc.php lang "loop"
 php laradoc.php lang "csrf"
-php laradoc.php lang "auth"
+
+# ── PSR-12 速查 ────────────────────────────────────────────────
+php laradoc.php psr                   # 完整 PSR-12 规则表
+php laradoc.php psr arrays           # 数组格式规则
+php laradoc.php psr naming           # 命名规范
+php laradoc.php psr methods         # 可见性与方法规范
+
+# ── 缓存 & 更新 ───────────────────────────────────────────────
+php laradoc.php cache                  # 查看本地缓存状态
+php laradoc.php update                 # 强制从 GitHub 拉取最新文档
+php laradoc.php subscribe              # 查看订阅 / 自动更新状态
 ```
 
 ---
@@ -162,10 +164,12 @@ laravel-docs-reader/
 ├── README.md                         # 英文版（主）
 ├── README.zh-CN.md                  # 中文版
 ├── .github/workflows/
-│   └── update-docs.yml               # 自动更新 PR（每周）
+│   └── update-docs.yml              # 自动更新 PR（每周）
+├── .cache/                          # 本地文档缓存（自动创建）
 ├── references/
 │   ├── version-detection.md          # 版本检测逻辑
 │   ├── version-diff.md              # Laravel 10/11/12 差异表
+│   ├── psr-12.md                    # PSR-12 速查参考
 │   ├── api-index.md                # 完整 API 索引
 │   ├── artisan-commands.md         # Artisan 命令参考
 │   ├── facades.md                 # Facade 方法签名
@@ -180,7 +184,7 @@ laravel-docs-reader/
 │       ├── notification.md
 │       └── testing.md
 └── scripts/
-    └── laradoc.php                # CLI 工具（10 个命令）
+    └── laradoc.php                # CLI 工具（14 个命令）
 ```
 
 ---

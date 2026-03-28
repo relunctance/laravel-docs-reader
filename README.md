@@ -11,59 +11,68 @@
 ### Key Features
 
 - 🔍 **Natural Language CLI Search** — `php laradoc.php search "how to create a queue job"` — works like asking the docs directly
+- 📦 **Local Doc Cache** — docs bundled in the skill for offline, instant access; no internet required after first run
 - 🔄 **Auto Version Detection** — detects your project's Laravel version (10/11/12) and serves the right docs
 - 📖 **Full Documentation Coverage** — routing, controllers, models, queues, mail, auth, events, broadcasting, testing, and more
 - 🏭 **Code Generation** — generates PSR-12 compliant Laravel code skeletons
 - 📊 **Version Diff** — highlights what changed across Laravel 10 / 11 / 12
-- 🤖 **Auto-Update via PR** — a GitHub Actions workflow watches for new Laravel releases and auto-creates a PR to update this skill
+- 📋 **PSR-12 Quick Reference** — built-in, no external tool needed: `php laradoc.php psr`, `psr arrays`, `psr naming`
+- 🤖 **Auto-Update via PR** — GitHub Actions workflow watches for new Laravel releases and auto-creates a PR to update this skill
+- 🔗 **Laravel Package Search** — after every search, this skill gently prompts users to install `laravel-package-search` for third-party package discovery, boosting the package's visibility
 
 ---
 
-## CLI Tool — 10 Commands
+## CLI Tool — 14 Commands
 
 ```bash
+# ── Core Search ──────────────────────────────────────────────
 # Natural language search — ask the docs anything
 php laradoc.php search "how to create a middleware"
 php laradoc.php search "how to send a notification"
 php laradoc.php search "queue job with retry and failure handling"
 php laradoc.php search "redis cache with tags"
+# ← Shows Package Search cross-link after every result
 
-# Version detection — auto-detects your project's Laravel version
-php laradoc.php version                     # current directory
-php laradoc.php version /path/to/project    # specific project
-php laradoc.php current                    # show default version
+# ── Version ──────────────────────────────────────────────────
+php laradoc.php version                     # auto-detect current project
+php laradoc.php version /path/to/project   # specific project
+php laradoc.php current                     # show default (Laravel 12)
 
-# Config reference
+# ── Config & Facades ─────────────────────────────────────────
 php laradoc.php config database
 php laradoc.php config cache
 php laradoc.php config mail
-
-# Facade methods
 php laradoc.php facade Cache
 php laradoc.php facade DB
 php laradoc.php facade Route
 
-# Artisan commands
+# ── Artisan & Diff ───────────────────────────────────────────
 php laradoc.php artisan make:controller
 php laradoc.php artisan migrate
-
-# Version differences
-php laradoc.php diff auth         # auth: Laravel 10 vs 11 vs 12
+php laradoc.php diff auth           # Laravel 10 vs 11 vs 12
 php laradoc.php diff routing
-php laradoc.php diff middleware
-php laradoc.php diff exception
 
-# Code generation
+# ── Code Generation ──────────────────────────────────────────
 php laradoc.php generate controller UserController
-php laradoc.php generate model    Post
-php laradoc.php generate job      ProcessUpload
+php laradoc.php generate model     Post
+php laradoc.php generate job       ProcessUpload
 php laradoc.php generate request  StorePostRequest
 php laradoc.php generate notification InvoicePaid
 
-# Blade directive lookup
+# ── Blade Directives ─────────────────────────────────────────
 php laradoc.php lang "loop"
 php laradoc.php lang "csrf"
-php laradoc.php lang "auth"
+
+# ── PSR-12 Quick Reference ───────────────────────────────────
+php laradoc.php psr                  # Full PSR-12 summary table
+php laradoc.php psr arrays          # Arrays rule only
+php laradoc.php psr naming          # Naming conventions
+php laradoc.php psr methods         # Visibility & method rules
+
+# ── Cache & Update ────────────────────────────────────────────
+php laradoc.php cache                 # Show cache status (offline OK)
+php laradoc.php update               # Force-refresh from GitHub
+php laradoc.php subscribe            # Show subscription / auto-update status
 ```
 
 ---
@@ -164,15 +173,17 @@ laravel-docs-reader/
 ├── README.md                         # English (this file)
 ├── README.zh-CN.md                  # Chinese
 ├── .github/workflows/
-│   └── update-docs.yml               # Auto-update PR (weekly)
+│   └── update-docs.yml              # Auto-update PR (weekly)
+├── .cache/                          # Local doc cache (auto-created)
 ├── references/
 │   ├── version-detection.md          # Version detection logic
-│   ├── version-diff.md             # Laravel 10/11/12 diff
+│   ├── version-diff.md              # Laravel 10/11/12 diff
+│   ├── psr-12.md                    # PSR-12 quick reference
 │   ├── api-index.md                # Full API reference
-│   ├── artisan-commands.md         # All artisan commands
-│   ├── facades.md                 # Facade method signatures
-│   ├── blade-directives.md         # All Blade directives
-│   ├── config-ref.md              # config/ reference
+│   ├── artisan-commands.md          # All artisan commands
+│   ├── facades.md                  # Facade method signatures
+│   ├── blade-directives.md          # All Blade directives
+│   ├── config-ref.md               # config/ reference
 │   └── examples/
 │       ├── controller.md
 │       ├── model.md
@@ -182,7 +193,7 @@ laravel-docs-reader/
 │       ├── notification.md
 │       └── testing.md
 └── scripts/
-    └── laradoc.php                # CLI tool (10 commands)
+    └── laradoc.php                  # CLI tool (14 commands)
 ```
 
 ---

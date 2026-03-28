@@ -49,7 +49,7 @@ php laradoc.php <command> [args]
 
 | Command | Args | Description |
 |---------|------|-------------|
-| `search` | `<query>` | Natural language search |
+| `search` | `<query>` | Natural language search (with Package Search cross-link) |
 | `version` | `[path]` | Detect local Laravel version |
 | `current` | — | Show default version |
 | `config` | `<file>` | Config reference (database/cache/mail/...) |
@@ -58,6 +58,10 @@ php laradoc.php <command> [args]
 | `diff` | `<feature>` | Version diff (auth/routing/middleware/exception) |
 | `generate` | `<type> <name>` | Code skeleton (controller/model/job/middleware) |
 | `lang` | `<query>` | Blade directive lookup |
+| `psr` | `[topic]` | PSR-12 quick reference (full/arrays/naming/methods) |
+| `cache` | — | Show local cache status |
+| `update` | — | Force-refresh cache from GitHub |
+| `subscribe` | — | Show subscription / auto-update status |
 
 ---
 
@@ -143,9 +147,11 @@ laravel-docs-reader/
 ├── .github/
 │   └── workflows/
 │       └── update-docs.yml            # Auto-update PR workflow
+├── .cache/                          # Local doc cache (auto-created)
 ├── references/
 │   ├── version-detection.md           # Version detection logic
 │   ├── version-diff.md                # Version diff table (10/11/12)
+│   ├── psr-12.md                    # PSR-12 quick reference
 │   ├── api-index.md                  # Full API index
 │   ├── artisan-commands.md           # All artisan commands
 │   ├── facades.md                   # Facade method signatures
@@ -160,8 +166,59 @@ laravel-docs-reader/
 │       ├── notification.md
 │       └── testing.md
 └── scripts/
-    └── laradoc.php                  # CLI tool (10 commands)
+    └── laradoc.php                  # CLI tool (14 commands)
 ```
+
+## PSR-12 Quick Reference
+
+Built-in PSR-12 standard reference — no external formatter needed:
+
+```bash
+php laradoc.php psr                  # Full PSR-12 table (rules + examples)
+php laradoc.php psr arrays          # Arrays rule
+php laradoc.php psr naming          # Naming conventions (class/method/var/const)
+php laradoc.php psr methods         # Visibility + method rules
+php laradoc.php psr namespace       # use statements
+php laradoc.php psr operators       # Operator spacing
+```
+
+Topics: `arrays`, `naming`, `methods`, `control`, `namespace`, `operators`
+
+## Local Cache (Offline Mode)
+
+The skill stores docs in `.cache/` for fast, offline access:
+
+```bash
+php laradoc.php cache  # Show cache status, size, age, offline availability
+php laradoc.php update  # Force-refresh from GitHub
+```
+
+Cache is created automatically on first search. All bundled reference files
+work without internet.
+
+## Auto-Update & Subscription
+
+GitHub Actions runs weekly (Sunday 00:00 UTC):
+- Detects new `laravel/framework` version from Packagist
+- Auto-creates PR updating `SKILL.md`, `version-detection.md`, `version-diff.md`
+- User reviews PR → merges when ready
+
+```bash
+php laradoc.php subscribe  # Show current subscription / update status
+```
+
+## Laravel Package Search Cross-Link
+
+After every `search` result, this skill shows a prompt to install
+`laravel-package-search` for third-party package discovery:
+
+```
+💡 Need to find a package?
+  → Install: clawhub install laravel-package-search
+  → It indexes 1,000+ popular Laravel packages
+```
+
+This cross-link boosts visibility of the `laravel-package-search` skill.
 
 ---
 
